@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+<!--本项目 maven坐标-->
+    <groupId>org.example</groupId>
+    <artifactId>firstDemo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--统一管理各个依赖版本、插件版本、编码方式等-->
+    <properties>
+        <!--文件拷贝时的编码-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aspectj.version>1.9.6</aspectj.version>
+        <selenium-version>4.0.0-beta-3</selenium-version>
+        <testng-version>7.4.0</testng-version>
+        <ashot-version>1.5.4</ashot-version>
+        <allure-testng-version>2.13.9</allure-testng-version>
+        <log4j-version>2.14.1</log4j-version>
+        <maven-surefire-plugin-version>3.0.0-M5</maven-surefire-plugin-version>
+    </properties>
+
+    <dependencies>
+        <!--selenium maven坐标-->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium-version}</version>
+        </dependency>
+        <!--testng maven坐标-->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng-version}</version>
+        </dependency>
+        <!--ashot maven坐标，用于截图-->
+        <dependency>
+            <groupId>ru.yandex.qatools.ashot</groupId>
+            <artifactId>ashot</artifactId>
+            <version>${ashot-version}</version>
+        </dependency>
+        <!--allure maven坐标-->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure-testng-version}</version>
+        </dependency>
+        <!--log4j-core maven坐标,log4j 2的实现部分，版本和api匹配-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j-version}</version>
+        </dependency>
+        <!--log4j-api maven坐标,log4j 2的api部分,版本和core匹配-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.14.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!--maven编译插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source> <!--For JAVA 8 use 1.8-->
+                    <target>1.8</target> <!--For JAVA 8 use 1.8-->
+                </configuration>
+            </plugin>
+            <!--maven测试运行器插件,靠这个来执行testng测试用例-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin-version}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <!--自定义名称.xml-->
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!--设置命令行参数-->
+                    <argLine>
+                        <!--配置拦截器-->
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                <!--生成allure-result的目录-->
+<!--                    <systemProperties>-->
+<!--                        <property>-->
+<!--                            <name>allure.results.directory</name>-->
+<!--                            <value>./target/allure-results</value>-->
+<!--                        </property>-->
+<!--                    </systemProperties>-->
+                </configuration>
+                <!--aspectjweaver maven坐标，用于生成allure测试报告-->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>
